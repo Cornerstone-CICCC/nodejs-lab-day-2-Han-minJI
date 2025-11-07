@@ -1,0 +1,66 @@
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Astro</title>
+	</head>
+	<body>
+
+    <h2>Sign Up</h2>
+		<form id="form-signup">
+			<input type="text" name="username" placeholder="Username" required>
+			<input type="password" name="password" placeholder="Password" required>
+      <input type="text" name="firstname" placeholder="Firstname" required>
+      <input type="text" name="lastname" placeholder="Lastname" required>
+			<button type="submit">Create Account</button>
+		</form>
+
+    <p>
+			<a href="/">Go Home page</a>
+		</p>
+		
+
+    <script>
+      // Sign up
+      const signupForm = document.getElementById('form-signup') as HTMLFormElement
+      signupForm.addEventListener("submit", async(e) => {
+        e.preventDefault()
+        const formData = new FormData(signupForm)
+        const username = formData.get('username')
+        const password = formData.get('password')
+        const firstname = formData.get('firstname')
+        const lastname = formData.get('lastname')
+
+        try{
+          const res = await fetch('http://localhost:3500/signup', {
+            method: "POST",
+            headers: {
+              "Content-type": "application/json"
+            },
+            body: JSON.stringify({
+              username,
+              password,
+              firstname,
+              lastname
+            })
+          })
+
+          const data = await res.json()
+          if(!res.ok){
+            console.error(data.message)
+            return
+          }
+          alert("Success! You can now log in")
+          signupForm.reset()
+        }catch(err){
+          console.error(err)
+        }
+
+
+      })
+    </script>
+
+	</body>
+</html>

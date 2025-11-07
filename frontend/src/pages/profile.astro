@@ -1,0 +1,67 @@
+
+ <html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Astro</title>
+	</head>
+	<body>
+    <div class="profile" style="display: none;">
+      <h1>Profile</h1>
+      <h3>Username: <span id="usernameSpan"></span></h3>
+      <h3>Firstname: <span id="firstnameSpan"></span></h3>
+      <h3>Lastname: <span id="lastnameSpan"></span></h3>
+      <button id="btn-logout">Log Out</button>
+    </div>
+		
+    <script>
+      // Get account details
+      const checkAccount = async () => {
+        try {
+          const res = await fetch("http://localhost:3500/check-auth", {
+            credentials: "include" // include cookies
+          })
+          const data = await res.json()
+          if (!res.ok) {
+            alert(data.message)
+            window.location.href = "/"
+            return
+          }
+          console.log(data)
+          const profile = document.querySelector('.profile') as HTMLDivElement
+          profile.style.display = "block"
+          const usernameSpan = document.getElementById('usernameSpan') as HTMLSpanElement
+          const firstnameSpan = document.getElementById('firstnameSpan') as HTMLSpanElement
+          const lastnameSpan = document.getElementById('lastnameSpan') as HTMLSpanElement
+
+          usernameSpan.textContent = data.username
+          firstnameSpan.textContent = data.firstname
+          lastnameSpan.textContent = data.lastname
+        } catch (err) {
+          console.error(err)
+        }
+      }
+
+      checkAccount()
+
+      // Log out
+      const btnLogout = document.getElementById('btn-logout') as HTMLButtonElement
+      btnLogout.addEventListener('click', async () => {
+        try {
+          await fetch("http://localhost:3500/logout", {
+            credentials: "include"
+          })
+          window.location.href = "/login" // redirect to home
+        } catch (err) {
+          console.error(err)
+        }
+      })
+
+    </script>
+
+	</body>
+</html>
+
+
